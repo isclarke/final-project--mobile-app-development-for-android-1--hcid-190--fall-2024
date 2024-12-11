@@ -75,3 +75,44 @@ fun MainMenu(navController: NavHostController) {
     }
   }
 }
+
+@Composable
+fun MatrixScreen() {
+  var input by remember { mutableStateOf("") }
+  var matrixOutput by remember { mutableStateOf("") }
+  val verticalScrollState = rememberScrollState()
+  val horizontalScrollState = rememberScrollState()
+
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp)
+      .verticalScroll(verticalScrollState)
+      .horizontalScroll(horizontalScrollState),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text("Matrix Generator", style = MaterialTheme.typography.headlineMedium)
+    Spacer(modifier = Modifier.height(16.dp))
+    TextField(
+      value = input,
+      onValueChange = { input = it },
+      label = { Text("Enter matrix size") },
+      modifier = Modifier.fillMaxWidth()
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(onClick = {
+      matrixOutput = generateMatrix(input)
+    }) {
+      Text("Generate Matrix")
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+      text = matrixOutput,
+      textAlign = TextAlign.Center,
+      fontSize = 14.sp,
+      modifier = Modifier.padding(16.dp)
+    )
+  }
+}
+
