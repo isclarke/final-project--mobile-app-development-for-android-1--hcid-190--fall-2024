@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finalproject.ui.theme.FinalProjectTheme
+import com.example.diamondmatrixmaker.ui.theme.DiamondmatrixmakerTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-      FinalProjectTheme {
+      DiamondmatrixmakerTheme {
         Surface(
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
@@ -33,17 +33,6 @@ class MainActivity : ComponentActivity() {
         }
       }
     }
-  }
-}
-
-
-@Composable
-fun AppNavigation() {
-  val navController = rememberNavController()
-  NavHost(navController = navController, startDestination = "main_menu") {
-    composable("main_menu") { MainMenu(navController) }
-    composable("matrix_screen") { MatrixScreen() }
-    composable("diamond_screen") { DiamondScreen() }
   }
 }
 
