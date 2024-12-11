@@ -79,6 +79,7 @@ fun MatrixScreen(onBack: () -> Unit) {
   var matrixOutput by remember { mutableStateOf("") }
   val verticalScrollState = rememberScrollState()
   val horizontalScrollState = rememberScrollState()
+  var matrixSize by remember { mutableStateOf(0) }
 
   Column(
     modifier = Modifier
@@ -99,7 +100,7 @@ fun MatrixScreen(onBack: () -> Unit) {
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = {
-      matrixOutput = generateMatrix(input)
+      matrixOutput = generateMatrix(matrixSize)
     }) {
       Text("Generate Matrix")
     }
@@ -159,7 +160,7 @@ fun DiamondScreen(onBack: () -> Unit) {
   }
 }
 
-private fun generateMatrix(size: String): String {
+private fun generateMatrix(size: Int): String {
   if (size <= 0) {
     return "Invalid matrix size"
   } else {
