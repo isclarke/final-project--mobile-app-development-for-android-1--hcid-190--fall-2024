@@ -50,7 +50,7 @@ fun AppNavigation() {
   }
 }
 
-Composable
+@Composable
 fun MainMenu(navController: NavHostController) {
   Column(
     modifier = Modifier
