@@ -116,3 +116,40 @@ fun MatrixScreen() {
   }
 }
 
+@Composable
+fun DiamondScreen() {
+  var input by remember { mutableStateOf("") }
+  var diamondOutput by remember { mutableStateOf("") }
+
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp)
+      .verticalScroll(rememberScrollState()),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text("Diamond Generator", style = MaterialTheme.typography.headlineMedium)
+    Spacer(modifier = Modifier.height(16.dp))
+    TextField(
+      value = input,
+      onValueChange = { input = it },
+      label = { Text("Enter diamond size") },
+      modifier = Modifier.fillMaxWidth()
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(onClick = {
+      diamondOutput = generateDiamond(input)
+    }) {
+      Text("Generate Diamond")
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+      text = diamondOutput,
+      textAlign = TextAlign.Center,
+      fontSize = 14.sp,
+      modifier = Modifier.padding(16.dp)
+    )
+  }
+}
+
