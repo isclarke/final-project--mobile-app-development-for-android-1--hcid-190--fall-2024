@@ -56,7 +56,7 @@ fun MainMenuContent(onNavigate: (String) -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Text("Which item would you like to render in the app?", style = MaterialTheme.typography.headlineMedium)
+    Text("Matrix or Diamond Generator", style = MaterialTheme.typography.headlineMedium)
     Spacer(modifier = Modifier.height(32.dp))
 
     Row(
