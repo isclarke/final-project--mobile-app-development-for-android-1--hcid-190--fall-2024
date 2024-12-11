@@ -15,8 +15,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -194,7 +192,7 @@ private fun defaultMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "RED_$num".padStart(width)  // Mark diagonal numbers
+          "$num".padStart(width)  // Mark diagonal numbers
         } else {
           num.toString().padStart(width)
         }
@@ -218,7 +216,7 @@ private fun numberMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "RED_$count".padStart(width)  // Mark diagonal numbers
+          "$count".padStart(width)  // Mark diagonal numbers
         } else {
           count.toString().padStart(width)
         }
@@ -244,7 +242,7 @@ private fun swapMatrix(matrix: Array<IntArray>): String {
 
       // If it's a diagonal element, keep its original value
       val value = if (isDiagonal) {
-        "RED_${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
+        "${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
       } else {
         (maxNumber - (rowIndex * size + columnIndex)).toString()
       }
