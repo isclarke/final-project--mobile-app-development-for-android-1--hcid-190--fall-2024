@@ -29,12 +29,13 @@ class MainActivity : ComponentActivity() {
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
-          AppNavigation()
+          MainMenu()
         }
       }
     }
   }
 }
+
 
 @Composable
 fun AppNavigation() {
@@ -47,7 +48,18 @@ fun AppNavigation() {
 }
 
 @Composable
-fun MainMenu(navController: NavHostController) {
+fun MainMenu() {
+  var currentScreen by remember { mutableStateOf("main_menu") }
+
+  when (currentScreen) {
+    "main_menu" -> MainMenuContent(onNavigate = { currentScreen = it })
+    "matrix_screen" -> MatrixScreen(onBack = { currentScreen = "main_menu" })
+    "diamond_screen" -> DiamondScreen(onBack = { currentScreen = "main_menu" })
+  }
+}
+
+@Composable
+fun MainMenuContent(onNavigate: (String) -> Unit) {
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -62,10 +74,10 @@ fun MainMenu(navController: NavHostController) {
       horizontalArrangement = Arrangement.SpaceEvenly,
       modifier = Modifier.fillMaxWidth()
     ) {
-      Button(onClick = { navController.navigate("matrix_screen") }) {
+      Button(onClick = { onNavigate("matrix_screen") }) {
         Text("Matrix")
       }
-      Button(onClick = { navController.navigate("diamond_screen") }) {
+      Button(onClick = { onNavigate("diamond_screen") }) {
         Text("Diamond")
       }
     }
@@ -73,18 +85,19 @@ fun MainMenu(navController: NavHostController) {
 }
 
 @Composable
-fun MatrixScreen() {
+fun MatrixScreen(onBack: () -> Unit) {
   var input by remember { mutableStateOf("") }
   var matrixOutput by remember { mutableStateOf("") }
-
   val verticalScrollState = rememberScrollState()
   val horizontalScrollState = rememberScrollState()
 
   Column(
     modifier = Modifier
       .fillMaxSize()
-      .padding(16.dp),
-    verticalArrangement = Arrangement.Top,
+      .padding(16.dp)
+      .verticalScroll(verticalScrollState)
+      .horizontalScroll(horizontalScrollState),
+    verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     Text("Matrix Generator", style = MaterialTheme.typography.headlineMedium)
@@ -102,25 +115,22 @@ fun MatrixScreen() {
       Text("Generate Matrix")
     }
     Spacer(modifier = Modifier.height(16.dp))
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(verticalScrollState)
-        .horizontalScroll(horizontalScrollState)
-    ) {
-      Text(
-        text = matrixOutput,
-        textAlign = TextAlign.Center,
-        fontSize = 14.sp,
-        modifier = Modifier.padding(16.dp)
-      )
+    Text(
+      text = matrixOutput,
+      textAlign = TextAlign.Center,
+      fontSize = 14.sp,
+      modifier = Modifier.padding(16.dp)
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(onClick = onBack) {
+      Text("Back")
     }
   }
 }
 
 
 @Composable
-fun DiamondScreen() {
+fun DiamondScreen(onBack: () -> Unit) {
   var input by remember { mutableStateOf("") }
   var diamondOutput by remember { mutableStateOf("") }
 
@@ -153,10 +163,15 @@ fun DiamondScreen() {
       fontSize = 14.sp,
       modifier = Modifier.padding(16.dp)
     )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(onClick = onBack) {
+      Text("Back")
+    }
   }
 }
+
 private fun generateMatrix(size: String): String {
-  if (size <= 0.toString()) {
+  if (size <= 0) {
     return "Invalid matrix size"
   } else {
 
@@ -248,6 +263,7 @@ private fun swapMatrix(matrix: Array<IntArray>): String {
   }
   return output.toString()
 }
+
 fun generateDiamond(input: String): String {
   val number = input.toIntOrNull() ?: return "Invalid input"
   if (number <= 0) return "Please enter a positive number"
