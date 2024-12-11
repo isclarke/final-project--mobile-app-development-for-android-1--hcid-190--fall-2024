@@ -18,10 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.finalproject.ui.theme.FinalProjectTheme
 
 class MainActivity : ComponentActivity() {
@@ -80,16 +76,15 @@ fun MainMenu(navController: NavHostController) {
 fun MatrixScreen() {
   var input by remember { mutableStateOf("") }
   var matrixOutput by remember { mutableStateOf("") }
+
   val verticalScrollState = rememberScrollState()
   val horizontalScrollState = rememberScrollState()
 
   Column(
     modifier = Modifier
       .fillMaxSize()
-      .padding(16.dp)
-      .verticalScroll(verticalScrollState)
-      .horizontalScroll(horizontalScrollState),
-    verticalArrangement = Arrangement.Center,
+      .padding(16.dp),
+    verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     Text("Matrix Generator", style = MaterialTheme.typography.headlineMedium)
@@ -107,14 +102,22 @@ fun MatrixScreen() {
       Text("Generate Matrix")
     }
     Spacer(modifier = Modifier.height(16.dp))
-    Text(
-      text = matrixOutput,
-      textAlign = TextAlign.Center,
-      fontSize = 14.sp,
-      modifier = Modifier.padding(16.dp)
-    )
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(verticalScrollState)
+        .horizontalScroll(horizontalScrollState)
+    ) {
+      Text(
+        text = matrixOutput,
+        textAlign = TextAlign.Center,
+        fontSize = 14.sp,
+        modifier = Modifier.padding(16.dp)
+      )
+    }
   }
 }
+
 
 @Composable
 fun DiamondScreen() {
@@ -152,4 +155,164 @@ fun DiamondScreen() {
     )
   }
 }
+private fun generateMatrix(size: String): String {
+  if (size <= 0.toString()) {
+    return "Invalid matrix size"
+  } else {
+
+    val matrix = Array(size) { IntArray(size) { 0 } }
+    val output = StringBuilder()
+
+    output.append("Printing matrix with default value: \n")
+    output.append(defaultMatrix(matrix))
+
+    output.append("Printing matrix: \n")
+    output.append(numberMatrix(matrix))
+
+    output.append("Printing flipped matrix: \n")
+    output.append(swapMatrix(matrix))
+
+    return output.toString()
+  }
+}
+
+private fun defaultMatrix(matrix: Array<IntArray>): String {
+  val size = matrix.size
+  val maxNumber = size * size
+  val width = maxNumber.toString().length - 2
+  val output = StringBuilder()
+
+  for ((rowIndex, row) in matrix.withIndex()) {
+    for ((columnIndex, num) in row.withIndex()) {
+      val isDiagonal = columnIndex == size - 1 - rowIndex
+      output.append(
+        if (isDiagonal) {
+          "RED_$num".padStart(width)  // Mark diagonal numbers
+        } else {
+          num.toString().padStart(width)
+        }
+      )
+      output.append(" ")
+    }
+    output.append("\n")
+  }
+  return output.toString()
+}
+
+private fun numberMatrix(matrix: Array<IntArray>): String {
+  val size = matrix.size
+  var count = 1
+  val maxNumber = size * size
+  val width = maxNumber.toString().length - 2
+  val output = StringBuilder()
+
+  for (rowIndex in 0 until size) {
+    for (columnIndex in 0 until size) {
+      val isDiagonal = columnIndex == size - 1 - rowIndex
+      output.append(
+        if (isDiagonal) {
+          "RED_$count".padStart(width)  // Mark diagonal numbers
+        } else {
+          count.toString().padStart(width)
+        }
+      )
+      count++
+      output.append(" ")
+    }
+    output.append("\n")
+  }
+  return output.toString()
+}
+
+private fun swapMatrix(matrix: Array<IntArray>): String {
+  val size = matrix.size
+  val output = StringBuilder()
+  val maxNumber = size * size
+  val width = maxNumber.toString().length - 2
+
+  for (rowIndex in 0 until size) {
+    for (columnIndex in 0 until size) {
+
+      val isDiagonal = columnIndex == size - 1 - rowIndex
+
+      // If it's a diagonal element, keep its original value
+      val value = if (isDiagonal) {
+        "RED_${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
+      } else {
+        (maxNumber - (rowIndex * size + columnIndex)).toString()
+      }
+
+      output.append(value.padStart(width) + " ")
+    }
+    output.append("\n")
+  }
+  return output.toString()
+}
+fun generateDiamond(input: String): String {
+  val number = input.toIntOrNull() ?: return "Invalid input"
+  if (number <= 0) return "Please enter a positive number"
+
+  val stringBuilder = StringBuilder()
+  val isEven = number % 2 == 0
+
+  if (isEven) {
+    // Top single star
+    val topSpaces = number / 2 - 1
+    stringBuilder.append("  ".repeat(topSpaces) + "  *")
+    stringBuilder.appendLine()
+
+    for (i in 1..number / 2) {
+      val spaceCount = number / 2 - i
+      val starCount = 2 * (i + 1) - 2
+
+      // Print spaces
+      stringBuilder.append("  ".repeat(spaceCount))
+      // Print stars with spaces between them
+      stringBuilder.append(" *".repeat(starCount))
+      stringBuilder.appendLine()
+    }
+
+    // Bottom half of the diamond (excluding the single bottom star)
+    for (i in 0 until number / 2 - 1) {
+      val spaceCount = i + 1
+      val starCount = number - 2 * (i + 1)
+
+      // Print spaces
+      stringBuilder.append("  ".repeat(spaceCount))
+      // Print stars with spaces between them
+      stringBuilder.append(" *".repeat(starCount))
+      stringBuilder.appendLine()
+    }
+
+    // Bottom  star
+    stringBuilder.append("  ".repeat(topSpaces) + "  *")
+    stringBuilder.appendLine()
+
+    //odd variation
+  } else {
+    for (i in 0 until number / 2 + 1) {
+      val spaceCount = number / 2 - i
+      val starCount = 2 * i + 1
+
+      stringBuilder.append(" ".repeat(spaceCount))
+      stringBuilder.append("* ".repeat(starCount).trimEnd())
+      stringBuilder.appendLine()
+    }
+
+    for (i in number / 2 - 1 downTo 0) {
+      val spaceCount = number / 2 - i
+      val starCount = 2 * i + 1
+
+      // Print spaces
+      stringBuilder.append(" ".repeat(spaceCount))
+      stringBuilder.append("* ".repeat(starCount).trimEnd())
+      stringBuilder.appendLine()
+    }
+  }
+
+  return stringBuilder.toString().trimEnd()
+}
+
+
+
 
