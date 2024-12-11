@@ -49,3 +49,29 @@ fun AppNavigation() {
     composable("diamond_screen") { DiamondScreen() }
   }
 }
+
+Composable
+fun MainMenu(navController: NavHostController) {
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text("Which item would you like to render in the app?", style = MaterialTheme.typography.headlineMedium)
+    Spacer(modifier = Modifier.height(32.dp))
+
+    Row(
+      horizontalArrangement = Arrangement.SpaceEvenly,
+      modifier = Modifier.fillMaxWidth()
+    ) {
+      Button(onClick = { navController.navigate("matrix_screen") }) {
+        Text("Matrix")
+      }
+      Button(onClick = { navController.navigate("diamond_screen") }) {
+        Text("Diamond")
+      }
+    }
+  }
+}
