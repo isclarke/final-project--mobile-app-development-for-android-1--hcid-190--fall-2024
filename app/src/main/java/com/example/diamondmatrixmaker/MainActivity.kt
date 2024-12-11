@@ -15,6 +15,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,10 +66,10 @@ fun MainMenuContent(onNavigate: (String) -> Unit) {
       modifier = Modifier.fillMaxWidth()
     ) {
       Button(onClick = { onNavigate("matrix_screen") }) {
-        Text("Matrix")
+        Text("Matrix Gen")
       }
       Button(onClick = { onNavigate("diamond_screen") }) {
-        Text("Diamond")
+        Text("Diamond Gen")
       }
     }
   }
@@ -77,16 +79,14 @@ fun MainMenuContent(onNavigate: (String) -> Unit) {
 fun MatrixScreen(onBack: () -> Unit) {
   var input by remember { mutableStateOf("") }
   var matrixOutput by remember { mutableStateOf("") }
-  val verticalScrollState = rememberScrollState()
-  val horizontalScrollState = rememberScrollState()
   var matrixSize by remember { mutableStateOf(0) }
 
   Column(
     modifier = Modifier
       .fillMaxSize()
       .padding(16.dp)
-      .verticalScroll(verticalScrollState)
-      .horizontalScroll(horizontalScrollState),
+      .verticalScroll(rememberScrollState())
+      .horizontalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
@@ -94,7 +94,10 @@ fun MatrixScreen(onBack: () -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     TextField(
       value = input,
-      onValueChange = { input = it },
+      onValueChange = {
+        input = it
+        matrixSize = it.toIntOrNull() ?: 0
+      },
       label = { Text("Enter matrix size") },
       modifier = Modifier.fillMaxWidth()
     )
@@ -105,12 +108,7 @@ fun MatrixScreen(onBack: () -> Unit) {
       Text("Generate Matrix")
     }
     Spacer(modifier = Modifier.height(16.dp))
-    Text(
-      text = matrixOutput,
-      textAlign = TextAlign.Center,
-      fontSize = 14.sp,
-      modifier = Modifier.padding(16.dp)
-    )
+    MatrixOutput(matrixSize, matrixOutput)  // Using the updated function directly
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
@@ -118,10 +116,9 @@ fun MatrixScreen(onBack: () -> Unit) {
   }
 }
 
-
 @Composable
 fun DiamondScreen(onBack: () -> Unit) {
-  var input by remember { mutableStateOf("") }
+  var size by remember { mutableStateOf("") }
   var diamondOutput by remember { mutableStateOf("") }
 
   Column(
@@ -135,14 +132,14 @@ fun DiamondScreen(onBack: () -> Unit) {
     Text("Diamond Generator", style = MaterialTheme.typography.headlineMedium)
     Spacer(modifier = Modifier.height(16.dp))
     TextField(
-      value = input,
-      onValueChange = { input = it },
+      value = size,
+      onValueChange = { size = it },
       label = { Text("Enter diamond size") },
       modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = {
-      diamondOutput = generateDiamond(input)
+      diamondOutput = generateDiamond(size)
     }) {
       Text("Generate Diamond")
     }
@@ -156,6 +153,39 @@ fun DiamondScreen(onBack: () -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
+    }
+  }
+}
+
+@Composable
+fun MatrixOutput(matrixSize: Int, matrixString: String) {
+  val fontSize = if (matrixSize >= 12) 12.sp else 16.sp
+  val lines = matrixString.split("\n").filter { it.isNotEmpty() }
+
+  Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    for ((rowIndex, line) in lines.withIndex()) {
+      Row(
+        modifier = Modifier
+          .padding(4.dp)
+          .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        val numbers = line.trim().split(" ")
+        for ((columnIndex, number) in numbers.withIndex()) {
+          // Check if the current position is on the diagonal (based on RED_ prefix)
+          val isDiagonal = number.startsWith("RED_")
+          Text(
+            text = number.removePrefix("RED_").trim(),  // Remove RED marker
+            color = if (isDiagonal) Color.Red else Color.Black, // Highlight diagonal numbers
+            modifier = Modifier
+              .weight(1f)
+              .padding(horizontal = 1.dp),
+            textAlign = TextAlign.Center,
+            fontSize = fontSize,
+            fontFamily = FontFamily.SansSerif
+          )
+        }
+      }
     }
   }
 }
