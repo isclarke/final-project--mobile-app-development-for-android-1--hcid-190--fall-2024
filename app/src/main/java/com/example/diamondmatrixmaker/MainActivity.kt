@@ -103,18 +103,48 @@ fun MatrixScreen(onBack: () -> Unit) {
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = {
-      matrixOutput = generateMatrix(matrixSize)
+      if (matrixSize > 0) {
+        matrixOutput = generateMatrix(matrixSize)
+      } else {
+        matrixOutput = "Invalid matrix size"
+      }
     }) {
       Text("Generate Matrix")
     }
     Spacer(modifier = Modifier.height(16.dp))
-    MatrixOutput(matrixSize, matrixOutput)  // Using the updated function directly
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+      val lines = matrixOutput.split("\n").filter { it.isNotEmpty() }
+      for ((rowIndex, line) in lines.withIndex()) {
+        Row(
+          modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+          val numbers = line.trim().split(" ")
+          for ((columnIndex, number) in numbers.withIndex()) {
+            val isDiagonal = number.startsWith("RED_")
+            Text(
+              text = number.removePrefix("RED_").trim(),
+              color = if (isDiagonal) Color.Red else Color.Black,
+              modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 1.dp),
+              textAlign = TextAlign.Center,
+              fontSize = 16.sp,
+              fontFamily = FontFamily.SansSerif
+            )
+          }
+        }
+      }
+    }
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
     }
   }
 }
+
 
 @Composable
 fun DiamondScreen(onBack: () -> Unit) {
@@ -153,39 +183,6 @@ fun DiamondScreen(onBack: () -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
-    }
-  }
-}
-
-@Composable
-fun MatrixOutput(matrixSize: Int, matrixString: String) {
-  val fontSize = if (matrixSize >= 12) 12.sp else 16.sp
-  val lines = matrixString.split("\n").filter { it.isNotEmpty() }
-
-  Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-    for ((rowIndex, line) in lines.withIndex()) {
-      Row(
-        modifier = Modifier
-          .padding(4.dp)
-          .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-      ) {
-        val numbers = line.trim().split(" ")
-        for ((columnIndex, number) in numbers.withIndex()) {
-          // Check if the current position is on the diagonal (based on RED_ prefix)
-          val isDiagonal = number.startsWith("RED_")
-          Text(
-            text = number.removePrefix("RED_").trim(),  // Remove RED marker
-            color = if (isDiagonal) Color.Red else Color.Black, // Highlight diagonal numbers
-            modifier = Modifier
-              .weight(1f)
-              .padding(horizontal = 1.dp),
-            textAlign = TextAlign.Center,
-            fontSize = fontSize,
-            fontFamily = FontFamily.SansSerif
-          )
-        }
-      }
     }
   }
 }
