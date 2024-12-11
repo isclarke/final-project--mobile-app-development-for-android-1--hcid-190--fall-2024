@@ -103,48 +103,23 @@ fun MatrixScreen(onBack: () -> Unit) {
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = {
-      if (matrixSize > 0) {
-        matrixOutput = generateMatrix(matrixSize)
-      } else {
-        matrixOutput = "Invalid matrix size"
-      }
+      matrixOutput = generateMatrix(matrixSize)
     }) {
       Text("Generate Matrix")
     }
     Spacer(modifier = Modifier.height(16.dp))
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-      val lines = matrixOutput.split("\n").filter { it.isNotEmpty() }
-      for ((rowIndex, line) in lines.withIndex()) {
-        Row(
-          modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          val numbers = line.trim().split(" ")
-          for ((columnIndex, number) in numbers.withIndex()) {
-            val isDiagonal = number.startsWith("RED_")
-            Text(
-              text = number.removePrefix("RED_").trim(),
-              color = if (isDiagonal) Color.Red else Color.Black,
-              modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 1.dp),
-              textAlign = TextAlign.Center,
-              fontSize = 16.sp,
-              fontFamily = FontFamily.SansSerif
-            )
-          }
-        }
-      }
-    }
+    Text(
+      text = matrixOutput,
+      textAlign = TextAlign.Center,
+      fontSize = 14.sp,
+      modifier = Modifier.padding(16.dp)
+    )
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
     }
   }
 }
-
 
 @Composable
 fun DiamondScreen(onBack: () -> Unit) {
