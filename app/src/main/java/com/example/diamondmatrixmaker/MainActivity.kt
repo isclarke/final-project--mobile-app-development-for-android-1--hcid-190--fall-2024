@@ -192,7 +192,7 @@ private fun defaultMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "$num".padStart(width)  // Mark diagonal numbers
+          "RED_$num".padStart(width)  // Mark diagonal numbers
         } else {
           num.toString().padStart(width)
         }
@@ -216,7 +216,7 @@ private fun numberMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "$count".padStart(width)  // Mark diagonal numbers
+          "RED_$count".padStart(width)  // Mark diagonal numbers
         } else {
           count.toString().padStart(width)
         }
@@ -242,7 +242,7 @@ private fun swapMatrix(matrix: Array<IntArray>): String {
 
       // If it's a diagonal element, keep its original value
       val value = if (isDiagonal) {
-        "${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
+        "RED_${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
       } else {
         (maxNumber - (rowIndex * size + columnIndex)).toString()
       }
