@@ -113,6 +113,7 @@ fun MatrixScreen(onBack: () -> Unit) {
       modifier = Modifier.padding(16.dp)
     )
     Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = onBack) {
       Text("Back")
     }
@@ -192,7 +193,7 @@ private fun defaultMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "RED_$num".padStart(width)  // Mark diagonal numbers
+          "$num".padStart(width)
         } else {
           num.toString().padStart(width)
         }
@@ -216,7 +217,7 @@ private fun numberMatrix(matrix: Array<IntArray>): String {
       val isDiagonal = columnIndex == size - 1 - rowIndex
       output.append(
         if (isDiagonal) {
-          "RED_$count".padStart(width)  // Mark diagonal numbers
+          "$count".padStart(width)
         } else {
           count.toString().padStart(width)
         }
@@ -239,10 +240,8 @@ private fun swapMatrix(matrix: Array<IntArray>): String {
     for (columnIndex in 0 until size) {
 
       val isDiagonal = columnIndex == size - 1 - rowIndex
-
-      // If it's a diagonal element, keep its original value
       val value = if (isDiagonal) {
-        "RED_${(rowIndex * size + columnIndex + 1)}" // Mark diagonal values
+        "${(rowIndex * size + columnIndex + 1)}"
       } else {
         (maxNumber - (rowIndex * size + columnIndex)).toString()
       }
@@ -318,7 +317,3 @@ fun generateDiamond(input: String): String {
 
   return stringBuilder.toString().trimEnd()
 }
-
-
-
-
